@@ -194,7 +194,7 @@ int main(int ac, char *av[]) {
 		int artistElement = artistSearch(songArtist, 0, iSongsArtist, inputArtist);	
 		if(artistElement == -1){cout << "no such song" << endl;}	
 		else {
-	cout << songArtist[artistElement].getTitle() << " " << songArtist[artistElement].getAlbum() << " " << songArtist[artistElement].getArtist() << endl;	
+	cout << songArtist[artistElement].getTitle() << " " << songArtist[artistElement].getAlbum() << " " << songArtist[artistElement].getArtist() << endl;		
 }
 
 	}
