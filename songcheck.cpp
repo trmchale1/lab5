@@ -4,8 +4,7 @@
 #include "song.h"
 #include <fstream>
 using namespace std;
-
-int readSongs(song *songs, int const MAX, string file){
+int readSongs(song **songs, int const MAX, string file){
 
 	string title, album, artist;
 	int year;
@@ -22,7 +21,8 @@ int readSongs(song *songs, int const MAX, string file){
 		input >> artist;
 		input >> year;
 		song construct(title, album, artist, year);
-		songs[i] = construct;
+		*(songs+i) = &(construct);
+//		cout << (**(songs+i)).getTitle() << endl;
 		i++;
 		input >> title; 
 	}
@@ -31,14 +31,18 @@ int readSongs(song *songs, int const MAX, string file){
 	return i;
 }
 
-void printSongs(song songs[], int isongs){
+void printSongs(song **songs, int isongs){
 
-	for(int i = 0; i < isongs; i++){
-		cout << songs[i].getTitle() << " " << songs[i].getAlbum() << " " << songs[i].getArtist() << endl;
+
+
+
+
+/*	for(int i = 0; i < isongs; i++){
+		cout << (*(songs+i))->getTitle() << " " << (*(songs+i))->getAlbum() << " " << (*(songs+i))->getArtist() << endl;
 }
 
 	cout << "Number of song objects printed " << isongs << endl;
-
+*/
 
 }
 
@@ -132,19 +136,27 @@ int main(int ac, char *av[]) {
 	string file = av[1];	
 	const int MAX = atoi(av[2]);	
 
-	song *songTitle = new song [MAX];
-	song *songAlbum = new song [MAX];
-	song *songArtist = new song [MAX];
+	song **songTitle = new song *[MAX];
+//	song **songAlbum = new song *[MAX];
+//	song **songArtist = new song *[MAX];
 
 	int iSongsTitle, iSongsAlbum, iSongsArtist = 0; 
 	iSongsTitle = readSongs(songTitle, MAX, file);
+	
+	cout << endl;
+	cout << endl;
+	for (int j = 0; j < 10; j++){
+			cout << (*(songTitle[j])).getTitle() << " " << endl;
+		}
+
+//	printSongs(songTitle,iSongsTitle);
+/*
 	iSongsAlbum = readSongs(songAlbum, MAX, file);
 	iSongsArtist = readSongs(songArtist, MAX, file);
 
 	string input;
 
 
-//	printSongs(songTitle,iSongsTitle);
 
 //	printSongs(songAlbum,iSongsAlbum);
 
@@ -185,10 +197,10 @@ int main(int ac, char *av[]) {
 		int artistElement = albumSearch(songArtist, 0, iSongsArtist, inputArtist);	
 		if(artistElement == -1){cout << "no such song" << endl;}	
 	}
-	
+*/	
 	delete [] songTitle;
-	delete [] songAlbum;
-	delete [] songArtist;
+//	delete [] songAlbum;
+//	delete [] songArtist;
 
 	return 0;
 }
