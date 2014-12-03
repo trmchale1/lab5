@@ -5,7 +5,10 @@
 #include <fstream>
 using namespace std;
 
-int readSongs(song *songs, int const MAX, string file){
+// Need to add a while loop to search feature so program doesn't close immediatley
+// First email prof
+
+int readSongs(song **songs, int const MAX, string file){
 
 	string title, album, artist;
 	int year;
@@ -22,7 +25,9 @@ int readSongs(song *songs, int const MAX, string file){
 		input >> artist;
 		input >> year;
 		song construct(title, album, artist, year);
-		songs[i] = construct;
+		song *songPtr = new song;
+		*songPtr = construct;
+		songs[i] = songPtr;
 		i++;
 		input >> title; 
 	}
@@ -31,10 +36,10 @@ int readSongs(song *songs, int const MAX, string file){
 	return i;
 }
 
-void printSongs(song songs[], int isongs){
+void printSongs(song **songs, int isongs){
 
 	for(int i = 0; i < isongs; i++){
-		cout << songs[i].getTitle() << " " << songs[i].getAlbum() << " " << songs[i].getArtist() << endl;
+		cout << songs[i]->getTitle() << " " << songs[i]->getAlbum() << " " << songs[i]->getArtist() << endl;
 }
 
 	cout << "Number of song objects printed " << isongs << endl;
@@ -42,11 +47,11 @@ void printSongs(song songs[], int isongs){
 
 }
 
-	void sortArtist(song songs[], int isongs){
-	song temp;
+	void sortArtist(song **songs, int isongs){
+	song *temp;
 	for(int i = 0; i < isongs; i++){
 		for (int j = i + 1; j < isongs; j++){	
-			if(songs[i].getArtist() > songs[j].getArtist()){
+			if(songs[i]->getArtist() > songs[j]->getArtist()){
 				temp = songs[i];
 				songs[i] = songs[j];
 				songs[j] = temp;
@@ -56,12 +61,12 @@ void printSongs(song songs[], int isongs){
 
 }
 
-	void sortAlbum(song songs[], int isongs){
-	song temp;
+	void sortAlbum(song **songs, int isongs){
+	song *temp;
 	for(int i = 0; i < isongs; i++){
 		for (int j = i + 1; j < isongs; j++){
 		
-			if(songs[i].getAlbum() > songs[j].getAlbum()){
+			if(songs[i]->getAlbum() > songs[j]->getAlbum()){
 				temp = songs[i];
 				songs[i] = songs[j];
 				songs[j] = temp;
@@ -69,12 +74,12 @@ void printSongs(song songs[], int isongs){
 		}
 	}
 }
-	void sortTitle(song songs[], int isongs){
-	song temp;
+	void sortTitle(song **songs, int isongs){
+	song *temp;
 	for(int i = 0; i < isongs; i++){
 		for (int j = i + 1; j < isongs; j++){
 		
-			if(songs[i].getTitle() > songs[j].getTitle()){
+			if(songs[i]->getTitle() > songs[j]->getTitle()){
 				temp = songs[i];
 				songs[i] = songs[j];
 				songs[j] = temp;
@@ -84,29 +89,29 @@ void printSongs(song songs[], int isongs){
 }
 
 
-int artistSearch(song arr[], int first, int last, string value){
+int artistSearch(song **arr, int first, int last, string value){
 	int middle;
 
 	if(first > last)
 		return -1;
 	middle = (first + last) /2;
-	if(arr[middle].getArtist() == value)
+	if(arr[middle]->getArtist() == value)
 		return middle;
-	if(arr[middle].getArtist() < value)
+	if(arr[middle]->getArtist() < value)
 		return artistSearch(arr, middle+1,last,value);
 	else
 		return artistSearch(arr,first,middle-1,value);	
 }
 
-int albumSearch(song arr[], int first, int last, string value){
+int albumSearch(song **arr, int first, int last, string value){
 	int middle;
 
 	if(first > last)
 		return -1;
 	middle = (first + last) /2;
-	if(arr[middle].getAlbum() == value)
+	if(arr[middle]->getAlbum() == value)
 		return middle;
-	if(arr[middle].getAlbum() < value)
+	if(arr[middle]->getAlbum() < value)
 		return albumSearch(arr, middle+1,last,value);
 	else
 		return albumSearch(arr,first,middle-1,value);	
@@ -114,15 +119,15 @@ int albumSearch(song arr[], int first, int last, string value){
 
 
 
-int titleSearch(song arr[], int first, int last, string value){
+int titleSearch(song **arr, int first, int last, string value){
 	int middle;
 
 	if(first > last)
 		return -1;
 	middle = (first + last) /2;
-	if(arr[middle].getTitle() == value)
+	if(arr[middle]->getTitle() == value)
 		return middle;
-	if(arr[middle].getTitle() < value)
+	if(arr[middle]->getTitle() < value)
 		return titleSearch(arr, middle+1,last,value);
 	else
 		return titleSearch(arr,first,middle-1,value);	
@@ -132,9 +137,9 @@ int main(int ac, char *av[]) {
 	string file = av[1];	
 	const int MAX = atoi(av[2]);	
 
-	song *songTitle = new song [MAX];
-	song *songAlbum = new song [MAX];
-	song *songArtist = new song [MAX];
+	song **songTitle = new song* [MAX];
+	song **songAlbum = new song* [MAX];
+	song **songArtist = new song* [MAX];
 
 	int iSongsTitle, iSongsAlbum, iSongsArtist = 0; 
 	iSongsTitle = readSongs(songTitle, MAX, file);
@@ -142,13 +147,6 @@ int main(int ac, char *av[]) {
 	iSongsArtist = readSongs(songArtist, MAX, file);
 
 	string input;
-
-
-//	printSongs(songTitle,iSongsTitle);
-
-//	printSongs(songAlbum,iSongsAlbum);
-
-//	printSongs(songArtist,iSongsArtist);
 
 	cout << "Enter t for TITLE, alb for ALBUM, or art for ARTIST" << endl;
 		
@@ -168,7 +166,7 @@ int main(int ac, char *av[]) {
 		int albumElement  = albumSearch(songAlbum, 0, iSongsAlbum, inputAlbum);
 		if(albumElement == -1){cout << "no such song" << endl;}
 		else {
-			cout << songAlbum[albumElement].getTitle() << " " << songAlbum[albumElement].getAlbum() << " " << songAlbum[albumElement].getArtist() << endl;		
+			cout << songAlbum[albumElement]->getTitle() << " " << songAlbum[albumElement]->getAlbum() << " " << songAlbum[albumElement]->getArtist() << endl;		
 	}	
 	}
 
@@ -181,7 +179,7 @@ int main(int ac, char *av[]) {
 		int titleElement = titleSearch(songTitle, 0, iSongsTitle, inputTitle);	
 		if(titleElement == -1){cout << "no such song" << endl;}	
 		else {
-			cout << songTitle[titleElement].getTitle() << " " << songTitle[titleElement].getAlbum() << " " << songTitle[titleElement].getArtist() << endl;		
+			cout << songTitle[titleElement]->getTitle() << " " << songTitle[titleElement]->getAlbum() << " " << songTitle[titleElement]->getArtist() << endl;		
 	}
 	}
 
@@ -194,7 +192,7 @@ int main(int ac, char *av[]) {
 		int artistElement = artistSearch(songArtist, 0, iSongsArtist, inputArtist);	
 		if(artistElement == -1){cout << "no such song" << endl;}	
 		else {
-	cout << songArtist[artistElement].getTitle() << " " << songArtist[artistElement].getAlbum() << " " << songArtist[artistElement].getArtist() << endl;	
+	cout << songArtist[artistElement]->getTitle() << " " << songArtist[artistElement]->getAlbum() << " " << songArtist[artistElement]->getArtist() << endl;	
 }
 
 	}
