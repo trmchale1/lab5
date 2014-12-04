@@ -5,9 +5,7 @@
 #include <fstream>
 using namespace std;
 
-// Need to add a while loop to search feature so program doesn't close immediatley
-// First email prof
-
+// need to add getline
 int readSongs(song **songs, int const MAX, string file){
 
 	string title, album, artist;
@@ -35,7 +33,15 @@ int readSongs(song **songs, int const MAX, string file){
 	input.close();
 	return i;
 }
-
+string space2underscore(string text)
+{
+    for(int i = 0; i < text.length(); i++)
+    {
+        if(text[i] == ' ')
+            text[i] = '_';
+    }
+    return text;
+}
 void printSongs(song **songs, int isongs){
 
 	for(int i = 0; i < isongs; i++){
@@ -148,7 +154,7 @@ int main(int ac, char *av[]) {
 
 	string input;
 
-	cout << "Enter t for TITLE, alb for ALBUM, or art for ARTIST" << endl;
+	cout << "Enter title for TITLE, album for ALBUM, or artist for ARTIST" << endl;
 		
 	cin >> input;
 
@@ -156,45 +162,106 @@ int main(int ac, char *av[]) {
 // This will find at most one element from the array that matches the search term
 // How to get more and know you iterated over the entire data structure
 
-
-	if(input == "alb"){		
+	if(input == "album"){		
+		int i = 1;
 		sortAlbum(songAlbum,iSongsAlbum);
 		printSongs(songAlbum,iSongsAlbum);
 		cout << "Enter the name of the album you want..." << endl;
 		string inputAlbum;
-		cin >> inputAlbum;
-		int albumElement  = albumSearch(songAlbum, 0, iSongsAlbum, inputAlbum);
-		if(albumElement == -1){cout << "no such song" << endl;}
-		else {
-			cout << songAlbum[albumElement]->getTitle() << " " << songAlbum[albumElement]->getAlbum() << " " << songAlbum[albumElement]->getArtist() << endl;		
-	}	
+		getline(cin>>ws,inputAlbum);
+	inputAlbum = space2underscore(inputAlbum);
+	int albumElement  = albumSearch(songAlbum, 0, iSongsAlbum, inputAlbum);
+	if(albumElement == -1){cout << "no such song" << endl;}
+	else{
+		int beginAlbumElement, endAlbumElement;
+		beginAlbumElement = albumElement;
+		endAlbumElement = albumElement;
+		if(songAlbum[albumElement-i]->getAlbum() == songAlbum[albumElement]->getAlbum()){	
+			while(songAlbum[albumElement-i]->getAlbum() == songAlbum[albumElement]->getAlbum()){
+				i++;
+				beginAlbumElement = albumElement-i;
+				beginAlbumElement = beginAlbumElement+1;
+			}
+		}
+		int n = 1;
+		if(songAlbum[albumElement+n]->getAlbum() == songAlbum[albumElement]->getAlbum()){
+			while(songAlbum[albumElement+n]->getAlbum() == songAlbum[albumElement]->getAlbum()){
+				n++;
+				endAlbumElement = albumElement+n;
+				endAlbumElement = endAlbumElement-1;
+			}
+		}
+		for(i = beginAlbumElement; i <= endAlbumElement; i++)
+			cout << songAlbum[i]->getTitle() << " " << songAlbum[i]->getAlbum() << " " << songAlbum[i]->getArtist() << endl;		
+		}		
 	}
 
-	if (input == "t"){
+	if (input == "title"){
+		int i = 1;
 		sortTitle(songTitle,iSongsTitle);		
 		printSongs(songTitle,iSongsTitle);
-		cout << "Enter the title of the song you want..." << endl;
-		string inputTitle;
-		cin >> inputTitle;
+		cout << "Enter the TITLE of the song you want..." << endl;
+		string inputTitle;	
+		getline(cin>>ws,inputTitle);
+		inputTitle = space2underscore(inputTitle);
 		int titleElement = titleSearch(songTitle, 0, iSongsTitle, inputTitle);	
 		if(titleElement == -1){cout << "no such song" << endl;}	
 		else {
-			cout << songTitle[titleElement]->getTitle() << " " << songTitle[titleElement]->getAlbum() << " " << songTitle[titleElement]->getArtist() << endl;		
-	}
+			int beginTitleElement, endTitleElement;
+			beginTitleElement = titleElement;
+			endTitleElement = titleElement;		
+		if(songTitle[titleElement-i]->getTitle() == songTitle[titleElement]->getTitle()){	
+			while(songTitle[titleElement-i]->getTitle() == songTitle[titleElement]->getTitle()){	
+				i++;
+				beginTitleElement = titleElement-i;
+				beginTitleElement = beginTitleElement+1;
+			}
+		}
+		int n = 1;
+		if(songTitle[titleElement+n]->getTitle() == songTitle[titleElement]->getTitle()){
+			while(songTitle[titleElement+n]->getTitle() == songTitle[titleElement]->getTitle()){
+				n++;
+				endTitleElement = titleElement+n;
+				endTitleElement = endTitleElement-1;
+		}	
+	}	
+		for(i = beginTitleElement; i <= endTitleElement; i++)
+			cout << songTitle[i]->getTitle() << " " << songTitle[i]->getAlbum() << " " << songTitle[i]->getArtist() << endl;		
+		}
 	}
 
-	if(input == "art"){
-		sortArtist(songArtist,iSongsArtist);
+	if(input == "artist"){		
+		int i = 1;
+		sortArtist(songArtist,iSongsArtist);		
 		printSongs(songArtist,iSongsArtist);
-		cout << "Enter the name of the artist you want..." << endl;
-		string inputArtist;
-		cin >> inputArtist;	
+		cout << "Enter the ARTIST of the song you want..." << endl;
+		string inputArtist;		
+		inputArtist = space2underscore(inputArtist);
+		getline(cin>>ws,inputArtist);
 		int artistElement = artistSearch(songArtist, 0, iSongsArtist, inputArtist);	
 		if(artistElement == -1){cout << "no such song" << endl;}	
 		else {
-	cout << songArtist[artistElement]->getTitle() << " " << songArtist[artistElement]->getAlbum() << " " << songArtist[artistElement]->getArtist() << endl;	
-}
-
+			int beginArtistElement, endArtistElement;
+			beginArtistElement = artistElement;
+			endArtistElement = artistElement;		
+		if(songArtist[artistElement-i]->getArtist() == songArtist[artistElement]->getArtist()){	
+			while(songArtist[artistElement-i]->getArtist() == songArtist[artistElement]->getArtist()){	
+				i++;
+				beginArtistElement = artistElement-i;
+				beginArtistElement = beginArtistElement+1;
+			}
+		}
+		int n = 1;
+		if(songArtist[artistElement+n]->getArtist() == songArtist[artistElement]->getArtist()){
+			while(songArtist[artistElement+n]->getArtist() == songArtist[artistElement]->getArtist()){
+				n++;
+				endArtistElement = artistElement+n;
+				endArtistElement = endArtistElement-1;
+		}	
+	}	
+		for(i = beginArtistElement; i <= endArtistElement; i++)
+			cout << songArtist[i]->getTitle() << " " << songArtist[i]->getAlbum() << " " << songArtist[i]->getArtist() << endl;		
+		}
 	}
 	
 	delete [] songTitle;
